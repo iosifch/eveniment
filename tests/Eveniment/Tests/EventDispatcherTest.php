@@ -15,6 +15,42 @@ class EventDispatcherTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
+    public function subscriberWithOptionalParams()
+    {
+        $this->dispatcher->removeSubscribers();
+        
+        $nameFromSubscriber = null;
+        $logger = new Logger();
+        
+        $this->dispatcher->on('foo', function($name, Logger $logger, $address = null) use (&$nameFromSubscriber) {
+            $nameFromSubscriber = $name;
+            $logger->offsetSet('name', $name);
+        });
+        $this->dispatcher->dispatch('foo', ['joe', $logger]);
+        
+        $this->assertEquals('joe', $nameFromSubscriber);
+        $this->assertEquals('joe', $logger->offsetGet('name'));
+    }
+
+    /** @test */
+    public function subscriberIsCalledWithWrongParams()
+    {
+        $this->dispatcher->removeSubscribers();
+        
+        $nameFromSubscriber = null;
+        $logger = new Logger();
+        
+        $this->dispatcher->on('foo', function($name, Logger $logger, $address) use (&$nameFromSubscriber) {
+            $nameFromSubscriber = $name;
+            $logger->offsetSet('name', $name);
+        });
+        
+        try {
+            $this->dispatcher->dispatch('foo', ['joe', $logger]);
+        } catch (\Exception $e) {}
+    }
+
+    /** @test */
     public function subscriberWithTwoParams()
     {
         $this->dispatcher->removeSubscribers();
