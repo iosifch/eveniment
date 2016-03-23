@@ -5,12 +5,14 @@
 ## Install
 **Eveniment** can be installed via composer running the command below:
 ```
-composer require eveniment/eveniment=dev-master
+composer require eveniment/eveniment
 ```
 Or fetching from the Github repository:
 ```
 git clone git@github.com:iosifch/eveniment.git
 ```
+## Test
+Just run ``phpunit`` and look at the green bar:)
 ## Usage
 Firstly, create the dispatcher event:
 ```php
@@ -25,7 +27,7 @@ Attach a simple subscriber to an event and after raise the event:
 $dispatcher->on('event.name', function($name) {
     echo $name;
 });
-$dispatcher->dispatch('event.name', 'Jon');
+$dispatcher->dispatch('event.name', ['Jon']);
 ```
 You can set the subscriber priority also. However, the default priority is 1000:
 ```php
@@ -36,4 +38,6 @@ $dispatcher->on('event.name', function() {});
 // This will be the first one called
 $dispatcher->on('event.name', ['vendor\library\Class', 'onEventRaise'], 5);
 ```
-
+## Examples and usability
+Below you'll find a very small application using the **Eveniment** library:   
+[eveniment-app link](https://github.com/iosifch/eveniment-app/blob/master/web/app.php)
