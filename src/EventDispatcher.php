@@ -6,17 +6,17 @@ class EventDispatcher implements EventDispatcherInterface
 {
     protected $subscribers = [];
 
-    public function on($event, callable $subscriber, $level = 1000)
+    public function on($event, callable $subscriber, $priority = 1000)
     {
         if (!isset($this->subscribers[$event])) {
             $this->subscribers[$event] = [];
         }
 
-        if (!isset($this->subscribers[$event][$level])) {
-            $this->subscribers[$event][$level] = [];
+        if (!isset($this->subscribers[$event][$priority])) {
+            $this->subscribers[$event][$priority] = [];
         }
 
-        $this->subscribers[$event][$level][] = $subscriber;
+        $this->subscribers[$event][$priority][] = $subscriber;
     }
 
     public function getSubscribers($event)
@@ -24,6 +24,11 @@ class EventDispatcher implements EventDispatcherInterface
         return isset($this->subscribers[$event]) ? $this->subscribers[$event] : [];
     }
 
+    /**
+     * Order the subscribers by priority
+     * 
+     * @param string $event
+     */
     protected function orderSubscribersForEvent($event)
     {
         if (!isset($this->subscribers[$event])) {
@@ -37,8 +42,8 @@ class EventDispatcher implements EventDispatcherInterface
     {
         $this->orderSubscribersForEvent($event);
 
-        foreach ($this->getSubscribers($event) as $subscribersLevel) {
-            foreach ($subscribersLevel as $subscriber) {
+        foreach ($this->getSubscribers($event) as $subscribersPriority) {
+            foreach ($subscribersPriority as $subscriber) {
                 call_user_func_array($subscriber, $params);
             }
         }
@@ -59,14 +64,14 @@ class EventDispatcher implements EventDispatcherInterface
             return false;
         }
 
-        foreach ($this->subscribers[$event] as &$subscribersLevel) {
-            $index = array_search($subscriber, $subscribersLevel, true);
+        foreach ($this->subscribers[$event] as &$subscribersPriority) {
+            $index = array_search($subscriber, $subscribersPriority, true);
 
             if (false === $index) {
                 return false;
             }
 
-            unset($subscribersLevel[$index]);
+            unset($subscribersPriority[$index]);
 
             return true;
         }
