@@ -7,10 +7,10 @@ interface EventDispatcherInterface
     /**
      * @param string $event
      * @param callable $subscriber
-     * @param integer $index
+     * @param integer $priority
      * @return void
      */
-    public function on($event, callable $subscriber, $index = 1000);
+    public function on($event, callable $subscriber, $priority = 1000);
 
     /**
      * @param string $event
