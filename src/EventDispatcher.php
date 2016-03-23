@@ -33,13 +33,13 @@ class EventDispatcher implements EventDispatcherInterface
         ksort($this->subscribers[$event]);
     }
 
-    public function dispatch($event, $params = null)
+    public function dispatch($event, array $params = [])
     {
         $this->orderSubscribersForEvent($event);
 
         foreach ($this->getSubscribers($event) as $subscribersLevel) {
             foreach ($subscribersLevel as $subscriber) {
-                call_user_func($subscriber, $params);
+                call_user_func_array($subscriber, $params);
             }
         }
     }

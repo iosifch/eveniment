@@ -15,6 +15,24 @@ class EventDispatcherTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
+    public function subscriberWithTwoParams()
+    {
+        $this->dispatcher->removeSubscribers();
+        
+        $nameFromSubscriber = null;
+        $logger = new Logger();
+        
+        $this->dispatcher->on('foo', function($name, Logger $logger) use (&$nameFromSubscriber) {
+            $nameFromSubscriber = $name;
+            $logger->offsetSet('name', $name);
+        });
+        $this->dispatcher->dispatch('foo', ['joe', $logger]);
+        
+        $this->assertEquals('joe', $nameFromSubscriber);
+        $this->assertEquals('joe', $logger->offsetGet('name'));
+    }
+
+    /** @test */
     public function callSubscribersInOrder()
     {
         $this->dispatcher->removeSubscribers();
@@ -71,7 +89,7 @@ class EventDispatcherTest extends \PHPUnit_Framework_TestCase
             }
         });
 
-        $this->dispatcher->dispatch('event.array_param', ['name' => 'iosif']);
+        $this->dispatcher->dispatch('event.array_param', [['name' => 'iosif']]);
 
         $this->assertEquals($logger->offsetGet('name'), 'iosif');
     }
@@ -86,7 +104,7 @@ class EventDispatcherTest extends \PHPUnit_Framework_TestCase
         });
 
         $objectParam = new Logger();
-        $this->dispatcher->dispatch('event.object_param', $objectParam);
+        $this->dispatcher->dispatch('event.object_param', [$objectParam]);
 
         $this->assertEquals('joe', $objectParam->offsetGet('name'));
     }
