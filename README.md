@@ -18,7 +18,7 @@ Firstly, create the dispatcher event:
 
 $dispatcher = new Eveniment\EventDispatcher();
 ```
-Attach a simple subscriber to an event:
+Attach a simple subscriber to an event and after raise the event:
 ```php
 <?php
 
@@ -36,7 +36,4 @@ $dispatcher->on('event.name', function() {});
 // This will be the first one called
 $dispatcher->on('event.name', ['vendor\library\Class', 'onEventRaise'], 5);
 ```
-
-
-
 
