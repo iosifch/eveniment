@@ -23,11 +23,11 @@ class EventDispatcherTest extends \PHPUnit_Framework_TestCase
         $secondCalled = null;
 
         $this->dispatcher->on('foo', function() use (&$secondCalled) {
-            $secondCalled = mktime();
+            $secondCalled = time();
         }, 2);
 
         $this->dispatcher->on('foo', function() use (&$firstCalled) {
-            $firstCalled = mktime();
+            $firstCalled = time();
             sleep(1);
         }, 1);
 
