@@ -33,10 +33,10 @@ You can set the subscriber priority also. However, the default priority is 1000:
 ```php
 <?php
 
-// This subscriber will be the last one called because it has priority set to 1000
-$dispatcher->on('event.name', function() {});
-// This will be the first one called
+// This will be the last one called because the lower priority
 $dispatcher->on('event.name', ['vendor\library\Class', 'onEventRaise'], 5);
+// This subscriber will be the first one called because it has priority set to 1000
+$dispatcher->on('event.name', function() {});
 ```
 ## Examples and usability
 Below you'll find a very small application using the **Eveniment** library:   
