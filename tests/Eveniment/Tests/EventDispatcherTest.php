@@ -32,7 +32,10 @@ class EventDispatcherTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('joe', $logger->offsetGet('name'));
     }
 
-    /** @test */
+    /**
+     * @test
+     * @expectedException PHPUnit_Framework_Error_Warning
+     */
     public function subscriberIsCalledWithWrongParams()
     {
         $this->dispatcher->removeSubscribers();
@@ -45,9 +48,8 @@ class EventDispatcherTest extends \PHPUnit_Framework_TestCase
             $logger->offsetSet('name', $name);
         });
         
-        try {
-            $this->dispatcher->dispatch('foo', ['joe', $logger]);
-        } catch (\Exception $e) {}
+        
+        $this->dispatcher->dispatch('foo', ['joe', $logger]);
     }
 
     /** @test */
@@ -69,7 +71,7 @@ class EventDispatcherTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
-    public function callSubscribersInOrder()
+    public function shouldCallSubscribersByPriority()
     {
         $this->dispatcher->removeSubscribers();
 
