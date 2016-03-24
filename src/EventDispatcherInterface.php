@@ -20,7 +20,7 @@ interface EventDispatcherInterface
 
     /**
      * @param string $event
-     * @param mixed $params
+     * @param array $params
      * @return
      */
     public function dispatch($event, array $params = []);

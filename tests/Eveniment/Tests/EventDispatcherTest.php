@@ -15,7 +15,42 @@ class EventDispatcherTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
-    public function subscriberWithOptionalParams()
+    public function removeSubscriberWithLowerPriority()
+    {
+        $this->dispatcher->removeSubscribers();
+        
+        $subscriber1 = function() { return 'higher priority'; };
+        $subscriber2 = function() { return 'lower priority'; };
+        
+        $this->dispatcher->on('foo', $subscriber1, 1);
+        $this->dispatcher->on('foo', $subscriber2, 2);
+        
+        $this->assertCount(2, $this->dispatcher->getSubscribers('foo'));
+        
+        $this->dispatcher->removeSubscriber('foo', $subscriber2);
+
+        $this->assertCount(1, $this->dispatcher->getSubscribers('foo'));
+    }
+
+    /** @test */
+    public function removeSubscribersForEvent()
+    {
+        $this->dispatcher->removeSubscribers();
+        
+        $this->dispatcher->on('foo', function() {});
+        $this->dispatcher->on('poo', function() {});
+        
+        $this->assertCount(1, $this->dispatcher->getSubscribers('foo'));
+        $this->assertCount(1, $this->dispatcher->getSubscribers('poo'));
+        
+        $this->dispatcher->removeSubscribers('foo');
+        
+        $this->assertCount(0, $this->dispatcher->getSubscribers('foo'));
+        $this->assertCount(1, $this->dispatcher->getSubscribers('poo'));
+    }
+
+    /** @test */
+    public function callSubscriberWithOptionalParam()
     {
         $this->dispatcher->removeSubscribers();
         
@@ -53,7 +88,7 @@ class EventDispatcherTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
-    public function subscriberWithTwoParams()
+    public function callSubscriberWithTwoParams()
     {
         $this->dispatcher->removeSubscribers();
         
@@ -78,13 +113,13 @@ class EventDispatcherTest extends \PHPUnit_Framework_TestCase
         $firstCalled = null;
         $secondCalled = null;
 
-        $this->dispatcher->on('foo', function() use (&$secondCalled) {
-            $secondCalled = time();
-        }, 2);
-
         $this->dispatcher->on('foo', function() use (&$firstCalled) {
             $firstCalled = time();
             sleep(1);
+        }, 2);
+
+        $this->dispatcher->on('foo', function() use (&$secondCalled) {
+            $secondCalled = time();
         }, 1);
 
         $this->dispatcher->dispatch('foo');

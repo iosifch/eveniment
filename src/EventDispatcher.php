@@ -35,7 +35,7 @@ class EventDispatcher implements EventDispatcherInterface
             return;
         }
 
-        ksort($this->subscribers[$event]);
+        krsort($this->subscribers[$event]);
     }
 
     public function dispatch($event, array $params = [])
@@ -64,16 +64,18 @@ class EventDispatcher implements EventDispatcherInterface
             return false;
         }
 
-        foreach ($this->subscribers[$event] as &$subscribersPriority) {
+        foreach ($this->subscribers[$event] as $priority => &$subscribersPriority) {
             $index = array_search($subscriber, $subscribersPriority, true);
 
             if (false === $index) {
-                return false;
+                continue;
             }
 
             unset($subscribersPriority[$index]);
-
-            return true;
+            
+            if (0 === count($subscribersPriority)) {
+                unset($this->subscribers[$event][$priority]);
+            }
         }
     }
 }
