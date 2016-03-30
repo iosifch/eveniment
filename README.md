@@ -12,7 +12,7 @@ Or fetching from the Github repository:
 git clone git@github.com:iosifch/eveniment.git
 ```
 ## Test
-Just run ``phpunit`` and look at the green bar:)
+Just run ``vendor/bin/phpunit`` and look at the green bar:)
 ## Usage
 Firstly, create the dispatcher event:
 ```php
