@@ -38,6 +38,3 @@ $dispatcher->on('event.name', ['vendor\library\Class', 'onEventRaise'], 5);
 // This subscriber will be the first one called because it has priority set to 1000
 $dispatcher->on('event.name', function() {});
 ```
-## Examples and usability
-Below you'll find a very small application using the **Eveniment** library:   
-[eveniment-app link](https://github.com/iosifch/eveniment-app/blob/master/web/app.php)
