@@ -77,5 +77,7 @@ class EventDispatcher implements EventDispatcherInterface
                 unset($this->subscribers[$event][$priority]);
             }
         }
+        
+        return true;
     }
 }
