@@ -34,7 +34,7 @@ interface EventDispatcherInterface
     /**
      * @param string $event
      * @param callable $subscriber
-     * @return void
+     * @return boolean
      */
     public function removeSubscriber($event, callable $subscriber);
 }
